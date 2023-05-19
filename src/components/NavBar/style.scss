@@ -1,0 +1,54 @@
+#navbar {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    background: var(--purple1);
+    padding: 0;
+    margin: 0;
+
+    >div {
+        padding: 0 !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 60px;
+        width: 100vw;
+    }
+
+    .navbar-side-box {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: calc(50% - 20px);
+        justify-content: space-evenly;
+    }
+
+    .speed-dial {
+        position: fixed;
+        bottom: 28px;
+        width: 80px;
+        left: calc(50vw - 40px);
+
+        button {
+            transition: none !important;
+            width: 60px;
+            height: 60px;
+            background-color: var(--black3);
+
+            .speed-dial-item {
+                color: var(--purple1)
+            }
+        }
+
+        >button {
+            color: var(--green);
+        }
+    }
+
+    .navbar-input-action {
+        opacity: 0;
+        position: absolute;
+        top: -100px;
+        left: -100px;
+    }
+}

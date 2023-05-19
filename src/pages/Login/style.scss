@@ -1,0 +1,68 @@
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 100vh;
+
+
+  #head {
+    width: 100vw;
+    height: 40vh;
+
+    background: var(--purple3) url(../../assets/stars.png) no-repeat center;
+
+    border-radius: 0 0 40% 40%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+    #logo {
+      width: 120px;
+      height: 120px;
+
+      padding: 8px;
+      margin-bottom: -40px;
+
+      background-color: var(--black2);
+
+      border-radius: 50%;
+    }
+  }
+
+  #body {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+    #login-title {
+      display: flex;
+      flex-direction: column;
+
+      text-align: center;
+      align-items: center;
+
+      gap: 14px;
+
+      #title {
+        font-size: 40px;
+      }
+
+      #subtitle {
+        font-size: 20px;
+        color: var(--black4);
+      }
+    }
+
+    #login-button {
+      background-color: var(--purple1);
+      padding: 14px;
+    }
+  }
+}

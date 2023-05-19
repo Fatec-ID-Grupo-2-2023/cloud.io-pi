@@ -1,0 +1,22 @@
+.google-login-button {
+    background-color: #262626;
+    border: none;
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    img {
+        width: 32px;
+        height: 32px;
+    }
+
+    .google-login-button-text {
+        font-size: 14px;
+        color: #fff;
+        text-transform: initial;
+    }
+}

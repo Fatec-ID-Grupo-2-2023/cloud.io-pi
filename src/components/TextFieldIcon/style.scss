@@ -1,0 +1,22 @@
+.text-field-icon {
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-end;
+
+    width: 100%;
+
+    gap: 8px;
+
+    img {
+        width: 30px;
+        height: 30px;
+    }
+
+    div {
+        width: 100%;
+
+        input {
+            width: 100%;
+        }
+    }
+}

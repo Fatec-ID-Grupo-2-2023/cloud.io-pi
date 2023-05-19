@@ -1,0 +1,22 @@
+{
+  "HiUser": "Olá, {{user}}",
+  "FreeStorageMsg": "Você tem <span>{{freeStorage}}</span> de espaço disponível",
+  "Search": "Pesquisar",
+  "Files": "Arquivos",
+  "Recents": "Recentes",
+  "Settings": "Configurações",
+  "Logout": "Sair",
+  "Storage": "Armazenamento",
+  "LastModifiedAt": "Modificado em",
+  "ViewAll": "Ver Todos",
+  "General": "Geral",
+  "pt": "Português",
+  "en": "Inglês",
+  "Language": "Idioma",
+  "RecentFiles": "Arquivos Recentes",
+  "DarkTheme": "Tema Escuro",
+  "Trash": "Lixeira",
+  "CloudioLoginSubtitle": "Unindo nuvens para alcançar novos horizontes",
+  "LoginWithGoogle": "Login com Google",
+  "Upload": "Carregar"
+}
