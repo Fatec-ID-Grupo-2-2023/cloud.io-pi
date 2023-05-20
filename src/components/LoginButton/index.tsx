@@ -2,6 +2,7 @@ import { Button, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { GoogleLogin, GoogleLoginResponse, GoogleLoginResponseOffline } from 'react-google-login';
 import { useHistory } from 'react-router-dom';
+import GoogleIcon from '../../assets/google.svg';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import './styles.scss';
 
@@ -35,7 +36,7 @@ export default function LoginButton({ id, text }: IProps) {
                     onClick={renderProps.onClick}
                     disabled={renderProps.disabled}
                 >
-                    <img src='src\assets\google.svg' />
+                    <img src={GoogleIcon} />
                     <Typography className='google-login-button-text'>
                         {text}
                     </Typography>
