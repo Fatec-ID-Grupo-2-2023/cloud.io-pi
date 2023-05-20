@@ -1,7 +1,7 @@
 import { Avatar, Box, IconButton } from '@mui/material';
 import { useContext, useState } from 'react';
-import AccountIcon from '../../assets/Account.svg';
-import MenuIcon from '../../assets/Menu.svg';
+import AccountIcon from '../../assets/account.svg';
+import MenuIcon from '../../assets/menu.svg';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import toggleDrawer from '../../helpers/toggleSidebar';
 import ProfileBox from '../ProfileBox';

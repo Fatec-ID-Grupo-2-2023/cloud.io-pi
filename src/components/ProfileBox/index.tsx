@@ -1,9 +1,9 @@
 import { Avatar, Box, Button, IconButton, Modal, Typography } from '@mui/material';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import AccountIcon from '../../assets/Account.svg';
-import LogoutIcon from '../../assets/Logout.svg';
+import AccountIcon from '../../assets/account.svg';
 import CloseIcon from '../../assets/close.svg';
+import LogoutIcon from '../../assets/logout.svg';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import LogoutButton from '../LogoutButton';
 import './style.scss';
