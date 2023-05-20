@@ -5,8 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import './styles.scss';
 
-const clientId = '840694087672-q5jr4irk22t3ompetcsu4n9m0ods8ack.apps.googleusercontent.com'
-
 interface IProps {
     id?: string;
     text?: string | null;
@@ -14,16 +12,18 @@ interface IProps {
 
 export default function LoginButton({ id, text }: IProps) {
     const history = useHistory();
-    const { setUser } = useContext(GlobalContext);
+    const { setGoogleUser } = useContext(GlobalContext);
 
     function onSuccess(response: GoogleLoginResponse | GoogleLoginResponseOffline) {
         if ('accessToken' in response) {
             history.push('/')
-            setUser(response)
+            setGoogleUser(response)
         } else {
             console.error('Login failed');
         }
     }
+
+    const clientId = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID;
 
     return (
         <GoogleLogin

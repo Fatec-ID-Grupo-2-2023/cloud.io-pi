@@ -52,7 +52,7 @@ export function matchTree(tree: ICloudioFile[]) {
     matchedTree = [...matchedTree, ...tree.filter(({ name }) => !duplicatedFolders.includes(name))];
 
     matchedTree.forEach(folder => {
-        if (folder.type === 'folder')
+        if (folder && folder.type === 'folder')
             folder.children = matchTree(folder.children);
     });
 

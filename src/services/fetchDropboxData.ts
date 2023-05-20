@@ -1,4 +1,5 @@
 import axios from "axios";
+import { DropboxAuth } from 'dropbox';
 import { ICloudioCapacity, ICloudioFile } from "../models/cloud";
 import { IDropboxAPIFiles, IDropboxFile, IDropboxStorage } from "../models/dropbox";
 import getFileType from '../utils/getFileType';
@@ -12,7 +13,7 @@ export async function getDropboxFiles(token: string) {
     let cursor = '';
     let hasMore = true;
 
-    const { data } = await api.post<IDropboxAPIFiles>('/files/list_folder', {
+    const { status, data } = await api.post<IDropboxAPIFiles>('/files/list_folder', {
         path: '',
         recursive: true
     }, {
@@ -21,18 +22,26 @@ export async function getDropboxFiles(token: string) {
         }
     });
 
+    if (status !== 200) {
+        throw new Error('Error fetching Dropbox files');
+    }
+
     rawFiles = [...rawFiles, ...data.entries];
     cursor = data.cursor;
     hasMore = data.has_more;
 
     while (hasMore) {
-        const { data } = await api.post('/files/list_folder/continue', {
+        const { status, data } = await api.post('/files/list_folder/continue', {
             cursor
         }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
+
+        if (status !== 200) {
+            throw new Error('Error fetching Dropbox files');
+        }
 
         rawFiles = [...rawFiles, ...data.entries];
         cursor = data.cursor;
@@ -64,12 +73,16 @@ export async function getDropboxFiles(token: string) {
 }
 
 export async function getDropboxAbout(token: string): Promise<ICloudioCapacity> {
-    const { data: { used, allocation: { allocated } } } = await api.post<IDropboxStorage>('/users/get_space_usage', null, {
+    const { status, data: { used, allocation: { allocated } } } = await api.post<IDropboxStorage>('/users/get_space_usage', null, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
         }
     });
+
+    if (status !== 200) {
+        throw new Error('Error fetching Dropbox storage');
+    }
 
     const response: ICloudioCapacity = {
         usage: used,
@@ -88,7 +101,7 @@ function getParent(files: IDropboxFile[], _path: string) {
 }
 
 export async function handleClick(token: string, path: string) {
-    const { data: { link } } = await api.post('files/get_temporary_link', {
+    const { status, data: { link } } = await api.post('files/get_temporary_link', {
         path
     }, {
         headers: {
@@ -96,5 +109,24 @@ export async function handleClick(token: string, path: string) {
         }
     });
 
+    if (status !== 200) {
+        throw new Error('Error fetching Dropbox download link');
+    }
+
     window.open(link, '_blank');
+}
+
+export async function dropboxLogin() {
+    const clientId = import.meta.env.VITE_DROPBOX_CLIENT_ID;
+    const clientSecret = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
+
+    const dropbox = new DropboxAuth({
+        clientId,
+        clientSecret
+    });
+
+    const domain = import.meta.env.VITE_DOMAIN;
+    const authUrl = (await dropbox.getAuthenticationUrl(`${domain}/dropbox`)).toString();
+
+    window.open(authUrl, '_self');
 }

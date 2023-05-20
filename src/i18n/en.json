@@ -18,5 +18,7 @@
   "Trash": "Trash",
   "CloudioLoginSubtitle": "Connecting clouds to reach new horizons",
   "LoginWithGoogle": "Login with Google",
-  "Upload": "Upload"
+  "Upload": "Upload",
+  "ConnectAccount": "Connect a new account",
+  "DropBox": "DropBox"
 }

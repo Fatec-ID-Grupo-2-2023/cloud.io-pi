@@ -25,18 +25,20 @@ function filterByName(files: ICloudioFile[], _name: string) {
 }
 
 function filterTree(files: ICloudioFile[], value: string, field: keyof ICloudioFile) {
-    let filteredFiles: ICloudioFile[] = [];
+    const filteredFiles: ICloudioFile[] = [];
 
     files.forEach(file => {
-        if (file.type !== 'folder') {
-            if (file[field] === value) {
-                filteredFiles.push(file);
-            }
-        } else {
-            const folder = filterTree(file.children, value, field);
+        if (file) {
+            if (file.type !== 'folder') {
+                if (file[field] === value) {
+                    filteredFiles.push(file);
+                }
+            } else {
+                const folder = filterTree(file.children, value, field);
 
-            if (folder.length > 0) {
-                filteredFiles.push({ ...file, children: folder });
+                if (folder.length > 0) {
+                    filteredFiles.push({ ...file, children: folder });
+                }
             }
         }
     });

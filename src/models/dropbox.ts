@@ -19,3 +19,13 @@ export interface IDropboxStorage {
         allocated: number
     };
 }
+
+export type IDropboxUser = IDropboxToken | undefined;
+
+interface IDropboxToken {
+    access_token: string;
+    token_type: string;
+    expires_in: number;
+    scope: string;
+    account_id: string;
+}

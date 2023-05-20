@@ -1,11 +1,15 @@
 import { createContext } from 'react';
 import { ICloudioFile, ICloudioStorage } from '../models/cloud';
+import { IDropboxUser } from '../models/dropbox';
 import { ILanguage } from '../models/general';
 import { IGoogleUser } from '../models/google';
 
 export interface IGlobalContext {
-    user: IGoogleUser;
-    setUser: (user: IGoogleUser) => void;
+    googleUser: IGoogleUser;
+    setGoogleUser: (user: IGoogleUser) => void;
+
+    dropboxUser: IDropboxUser;
+    setDropboxUser: (user: IDropboxUser) => void;
 
     cloudFiles: ICloudioFile[];
     trashedFiles: ICloudioFile[];
@@ -17,8 +21,11 @@ export interface IGlobalContext {
 }
 
 export const GlobalContext = createContext<IGlobalContext>({
-    user: undefined,
-    setUser: () => null,
+    googleUser: undefined,
+    setGoogleUser: () => null,
+
+    dropboxUser: undefined,
+    setDropboxUser: () => null,
 
     cloudFiles: [],
     trashedFiles: [],

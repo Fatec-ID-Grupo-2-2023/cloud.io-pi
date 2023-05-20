@@ -19,7 +19,7 @@ export interface ICloudioFile {
     children: ICloudioFile[];
 }
 
-interface ICloudioAccount {
+export interface ICloudioAccount {
     id: ICloudioOrigin;
     name: string;
     usage: number;

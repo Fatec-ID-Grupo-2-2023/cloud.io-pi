@@ -15,7 +15,7 @@ interface IProps {
 
 export default function ProfileBox({ open, onClose }: IProps) {
     const { t } = useTranslation();
-    const { user } = useContext(GlobalContext);
+    const { googleUser } = useContext(GlobalContext);
 
     return (
         <Box>
@@ -33,15 +33,15 @@ export default function ProfileBox({ open, onClose }: IProps) {
                     <Box id='modal-modal-description'>
                         <Avatar
                             className='avatar'
-                            src={user?.profileObj.imageUrl ?? AccountIcon}
-                            alt={user?.profileObj.givenName ?? 'User'}
+                            src={googleUser?.profileObj.imageUrl ?? AccountIcon}
+                            alt={googleUser?.profileObj.givenName ?? 'User'}
                             imgProps={{
                                 referrerPolicy: 'no-referrer'
                             }}
                         />
                         <Box id='user-info'>
-                            <Typography id='user-name'>{user?.profileObj.name}</Typography>
-                            <Typography id='user-email'>{user?.profileObj.email}</Typography>
+                            <Typography id='user-name'>{googleUser?.profileObj.name}</Typography>
+                            <Typography id='user-email'>{googleUser?.profileObj.email}</Typography>
                         </Box>
                     </Box>
                     <Box id='modal-footer'>

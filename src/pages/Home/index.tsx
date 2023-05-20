@@ -1,5 +1,5 @@
-import { Box, Typography } from '@mui/material';
-import { useContext } from 'react';
+import { Box, List, ListItem, ListItemButton, ListItemIcon, Modal, Typography } from '@mui/material';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import DocIcon from '../../assets/empty-doc.svg';
@@ -8,23 +8,27 @@ import MusicIcon from '../../assets/music.svg';
 import VideoIcon from '../../assets/video.svg';
 import CategoryButton from '../../components/CategoryButton';
 import CloudAccount from '../../components/CloudAccount';
+import CloudAccountEmpty from '../../components/CloudAccountEmpty';
 import FilesExplorer from '../../components/FilesExplorer';
 import Header from '../../components/Header';
 import NavBar from '../../components/NavBar';
 import ProgressBar from '../../components/ProgressBar';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ICloudioOrigin, ICloudioType } from '../../models/cloud';
+import { dropboxLogin } from '../../services/fetchDropboxData';
 import { convertSizeFile } from '../../utils/convertUnits';
 import { filterRecentFiles } from '../../utils/filterFiles';
-import getCloudIcon from './getCloudIcon';
+import { getOriginIcon } from '../../utils/getIcon';
 import './style.scss';
 
 export default function Home() {
-    const { user, cloudStorage: { usage, limit, accounts }, cloudFiles } = useContext(GlobalContext);
+    const { googleUser, cloudStorage: { usage, limit, accounts }, cloudFiles } = useContext(GlobalContext);
     const { t } = useTranslation();
     const history = useHistory();
 
     const freeStorage = convertSizeFile(limit - usage);
+
+    const [connectAccount, setConnectAccount] = useState(false);
 
     function handleClick(origin: ICloudioOrigin = 'all', type: ICloudioType = 'all') {
         history.push(`/files/${origin}/${type}`);
@@ -36,9 +40,38 @@ export default function Home() {
         <Box id='home'>
             <Header />
 
+            <Modal
+                id='connect-account-modal'
+                open={connectAccount}
+                onClose={() => setConnectAccount(false)}
+            >
+                <Box id='connect-account-box' >
+                    <Typography variant='h1' >
+                        {t('ConnectAccount')}
+                    </Typography>
+                    <List>
+                        <ListItem>
+                            <ListItemButton
+                                className='connect-account-item'
+                                onClick={dropboxLogin}
+                            >
+                                <ListItemIcon
+                                    className='connect-account-icon'
+                                >
+                                    <img src={getOriginIcon('dropbox')} alt='DropBox' />
+                                </ListItemIcon>
+                                <Typography variant='h2' >
+                                    {t('DropBox')}
+                                </Typography>
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Box>
+            </Modal>
+
             <section id='cloud-capacity' >
                 <Typography variant='h1' >
-                    {t('HiUser', { user: user?.profileObj.givenName })}
+                    {t('HiUser', { user: googleUser?.profileObj.givenName })}
                 </Typography>
                 <Typography variant='h2'
                     dangerouslySetInnerHTML={{
@@ -53,9 +86,11 @@ export default function Home() {
 
             <section id='cloud-accounts' >
                 {accounts.map(({ id, name, usage, limit }, index) => (
-                    <CloudAccount key={index} icon={getCloudIcon(id)} title={name} usage={usage} limit={limit} onClick={() => handleClick(id)} />
+                    <CloudAccount key={index} icon={getOriginIcon(id)} title={name} usage={usage} limit={limit} onClick={() => handleClick(id)} />
                 ))}
-                {/* <CloudAccountEmpty onClick={() => console.log('kk')} /> */}
+                {accounts.length < 2 && (
+                    <CloudAccountEmpty onClick={() => setConnectAccount(true)} />
+                )}
             </section>
 
             <section id='file-categories' >

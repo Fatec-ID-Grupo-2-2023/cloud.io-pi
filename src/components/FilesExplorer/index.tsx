@@ -99,7 +99,7 @@ export default function FilesExplorer({ id, title, link, linkText, layout, files
                 spacing={2}
                 className='content'
             >
-                {currentFiles.map(({ id, name, type, size, modifiedTime, handleClick, children }, index) => (
+                {currentFiles.filter((file) => file).map(({ id, name, type, size, modifiedTime, handleClick, children, origin }, index) => (
                     <FileListItem
                         key={index}
                         isList={currentLayout === 'list'}
@@ -108,6 +108,7 @@ export default function FilesExplorer({ id, title, link, linkText, layout, files
                         size={size ? convertSizeFile(size) : undefined}
                         lastModified={modifiedTime}
                         onClick={() => onFileClick(id, name, children, handleClick)}
+                        origin={origin}
                     />
                 ))}
             </Grid>

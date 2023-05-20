@@ -12,7 +12,7 @@ export async function getGoogleDriveFiles(token: string): Promise<ICloudioFile[]
     let nextPageToken = '';
 
     do {
-        const { data } = await api.get<IGoogleAPIFiles>('/drive/v3/files', {
+        const { status, data } = await api.get<IGoogleAPIFiles>('/drive/v3/files', {
             headers: {
                 Authorization: `Bearer ${token}`
             },
@@ -21,6 +21,10 @@ export async function getGoogleDriveFiles(token: string): Promise<ICloudioFile[]
                 pageToken: nextPageToken,
             }
         });
+
+        if (status !== 200) {
+            throw new Error('Error fetching Google Drive files');
+        }
 
 
         rawFiles = [...rawFiles, ...data.files];
@@ -62,7 +66,7 @@ export async function getGoogleDriveFiles(token: string): Promise<ICloudioFile[]
 }
 
 export async function getGoogleDriveAbout(token: string): Promise<ICloudioCapacity> {
-    const { data: { storageQuota } } = await api.get<IGoogleAPIAbout>('/drive/v3/about', {
+    const { status, data: { storageQuota } } = await api.get<IGoogleAPIAbout>('/drive/v3/about', {
         headers: {
             Authorization: `Bearer ${token}`
         },
@@ -70,6 +74,10 @@ export async function getGoogleDriveAbout(token: string): Promise<ICloudioCapaci
             fields: 'storageQuota'
         }
     });
+
+    if (status !== 200) {
+        throw new Error('Error fetching Google Drive storage');
+    }
 
     const response: ICloudioCapacity = {
         usage: parseInt(storageQuota.usage),

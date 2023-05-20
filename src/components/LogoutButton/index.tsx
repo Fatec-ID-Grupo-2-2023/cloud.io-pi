@@ -3,18 +3,17 @@ import { GoogleLogout } from 'react-google-login';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import './style.scss';
 
-const clientId = '840694087672-q5jr4irk22t3ompetcsu4n9m0ods8ack.apps.googleusercontent.com'
-
 export default function LogoutButton() {
+    const { setGoogleUser } = useContext(GlobalContext);
 
-    const { setUser } = useContext(GlobalContext);
+    const clientId = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID;
 
     return (
         <GoogleLogout
             className='logout-button'
             clientId={clientId}
             buttonText={'Logout'}
-            onLogoutSuccess={() => setUser(undefined)}
+            onLogoutSuccess={() => setGoogleUser(undefined)}
         />
     )
 

@@ -9,20 +9,21 @@ import './style.scss';
 export default function Login() {
 	const { t } = useTranslation();
 
-	const clientId = '840694087672-q5jr4irk22t3ompetcsu4n9m0ods8ack.apps.googleusercontent.com'
-	const apiKey = 'AIzaSyApWKH5LH8FD5Y7DP4_5COYy46v96PAJIE'
-	const scope = 'https://www.googleapis.com/auth/drive'
-
 	useEffect(() => {
+		const clientId = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID;
+		const apiKey = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY;
+		const scope = 'https://www.googleapis.com/auth/drive';
+
 		function start() {
 			gapi.client.init({
 				apiKey,
 				clientId,
 				scope
-			})
+			});
 		}
-		gapi.load('client:auth2', start)
-	}, []);
+
+		gapi.load('client:auth2', start);
+	}, [gapi]);
 
 	return (
 		<Box id='login'>
