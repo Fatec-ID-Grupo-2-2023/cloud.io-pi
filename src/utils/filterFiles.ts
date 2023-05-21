@@ -19,7 +19,7 @@ export function filterFiles(files: ICloudioFile[], byName?: string, byOrigin?: I
 }
 
 function filterByName(files: ICloudioFile[], _name: string) {
-    const filteredFiles = files.filter(({ name }) => name.toLowerCase().includes(_name.toLowerCase()));
+    const filteredFiles = files.filter((file) => file && file.name.toLowerCase().includes(_name.toLowerCase()));
 
     return filteredFiles;
 }
