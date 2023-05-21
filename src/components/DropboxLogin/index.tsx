@@ -9,8 +9,6 @@ export default function DropboxLogin() {
     const history = useHistory();
     const { setDropboxUser } = useContext(GlobalContext);
 
-    debugger;
-
     const user = queryString.parse(history.location.hash);
 
     if (user.access_token && user.account_id && user.token_type && user.expires_in && user.scope) {
