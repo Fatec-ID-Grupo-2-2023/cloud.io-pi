@@ -126,7 +126,7 @@ export async function dropboxLogin() {
     });
 
     const domain = import.meta.env.VITE_DROPBOX_REDIRECT_DOMAIN;
-    const authUrl = (await dropbox.getAuthenticationUrl(`${domain}/dropbox`)).toString();
+    const authUrl = (await dropbox.getAuthenticationUrl(`${domain}/`)).toString();
 
     window.open(authUrl, '_self');
 }

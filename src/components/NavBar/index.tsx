@@ -36,9 +36,9 @@ export default function NavBar() {
             <Toolbar>
                 <Box className='navbar-side-box'>
                     <IconButton
-                        onClick={() => history.push('/')}
+                        onClick={() => history.push('/home')}
                     >
-                        {history.location.pathname === '/' ? (
+                        {history.location.pathname === '/home' ? (
                             <img src={HomeActiveIcon} alt={''} />
                         ) : (
                             <img src={HomeIcon} alt={''} />

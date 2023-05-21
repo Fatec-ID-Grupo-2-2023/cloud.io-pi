@@ -23,8 +23,8 @@ export default function Router() {
                     <ProtectedRoute exact path='/files' component={Files} />
                     <ProtectedRoute exact path='/trash' component={Trash} />
                     <ProtectedRoute exact path='/settings' component={Settings} />
-                    <Route path='/dropbox' component={DropboxLogin} />
-                    <ProtectedRoute path='/' component={Home} />
+                    <ProtectedRoute path='/home' component={Home} />
+                    <Route path='/' component={DropboxLogin} />
                 </Switch>
             </App>
         </GlobalContext.Provider>
