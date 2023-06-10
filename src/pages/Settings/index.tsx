@@ -12,7 +12,7 @@ export default function Settings() {
   const { language, setLanguage } = useGlobalContext();
   // const [theme, toggleTheme] = useToggle('dark', 'light');
 
-  const languages = ['pt', 'en'];
+  const languages = ['pt', 'en', 'es', 'fr', 'de', 'it'];
 
   return (
     <Box id='settings'>

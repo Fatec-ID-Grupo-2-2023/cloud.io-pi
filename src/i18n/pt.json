@@ -12,6 +12,10 @@
   "General": "Geral",
   "pt": "Português",
   "en": "Inglês",
+  "es": "Espanhol",
+  "it": "Italiano",
+  "fr": "Francês",
+  "de": "Alemão",
   "Language": "Idioma",
   "RecentFiles": "Arquivos Recentes",
   "DarkTheme": "Tema Escuro",
@@ -19,6 +23,6 @@
   "CloudioLoginSubtitle": "Unindo nuvens para alcançar novos horizontes",
   "LoginWithGoogle": "Login com Google",
   "Upload": "Carregar",
-  "ConnectAccount": "Conect uma nova conta",
+  "ConnectAccount": "Conectar uma nova conta",
   "DropBox": "DropBox"
 }
