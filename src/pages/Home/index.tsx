@@ -1,5 +1,13 @@
-import { Box, List, ListItem, ListItemButton, ListItemIcon, Modal, Typography } from '@mui/material';
-import { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import {
+    Box,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    Modal,
+    Typography,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import DocIcon from '../../assets/empty-doc.svg';
@@ -22,13 +30,30 @@ import { getOriginIcon } from '../../utils/getIcon';
 import './style.scss';
 
 export default function Home() {
-    const { googleUser, cloudStorage: { usage, limit, accounts }, cloudFiles } = useContext(GlobalContext);
+    const {
+        googleUser,
+        cloudStorage: { usage, limit, accounts },
+        cloudFiles,
+    } = useContext(GlobalContext);
     const { t } = useTranslation();
     const history = useHistory();
 
     const freeStorage = convertSizeFile(limit - usage);
 
     const [connectAccount, setConnectAccount] = useState(false);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     function handleClick(origin: ICloudioOrigin = 'all', type: ICloudioType = 'all') {
         history.push(`/files/${origin}/${type}`);
@@ -45,62 +70,58 @@ export default function Home() {
                 open={connectAccount}
                 onClose={() => setConnectAccount(false)}
             >
-                <Box id='connect-account-box' >
-                    <Typography variant='h1' >
-                        {t('ConnectAccount')}
-                    </Typography>
+                <Box id='connect-account-box'>
+                    <Typography variant='h1'>{t('ConnectAccount')}</Typography>
                     <List>
                         <ListItem>
-                            <ListItemButton
-                                className='connect-account-item'
-                                onClick={dropboxLogin}
-                            >
-                                <ListItemIcon
-                                    className='connect-account-icon'
-                                >
+                            <ListItemButton className='connect-account-item' onClick={dropboxLogin}>
+                                <ListItemIcon className='connect-account-icon'>
                                     <img src={getOriginIcon('dropbox')} alt='DropBox' />
                                 </ListItemIcon>
-                                <Typography variant='h2' >
-                                    {t('DropBox')}
-                                </Typography>
+                                <Typography variant='h2'>{t('DropBox')}</Typography>
                             </ListItemButton>
                         </ListItem>
                     </List>
                 </Box>
             </Modal>
 
-            <section id='cloud-capacity' >
-                <Typography variant='h1' >
+            <section id='cloud-capacity'>
+                <Typography variant='h1'>
                     {t('HiUser', { user: googleUser?.profileObj.givenName })}
                 </Typography>
-                <Typography variant='h2'
+                <Typography
+                    variant='h2'
                     dangerouslySetInnerHTML={{
-                        __html: t('FreeStorageMsg', { freeStorage })
+                        __html: t('FreeStorageMsg', { freeStorage }),
                     }}
                 />
-                <ProgressBar
-                    usedCapacity={usage}
-                    totalCapacity={limit}
-                />
+                <ProgressBar usedCapacity={usage} totalCapacity={limit} />
             </section>
 
-            <section id='cloud-accounts' >
+            <section id='cloud-accounts'>
                 {accounts.map(({ id, name, usage, limit }, index) => (
-                    <CloudAccount key={index} icon={getOriginIcon(id)} title={name} usage={usage} limit={limit} onClick={() => handleClick(id)} />
+                    <CloudAccount
+                        key={index}
+                        icon={getOriginIcon(id)}
+                        title={name}
+                        usage={usage}
+                        limit={limit}
+                        onClick={() => handleClick(id)}
+                    />
                 ))}
                 {accounts.length < 2 && (
                     <CloudAccountEmpty onClick={() => setConnectAccount(true)} />
                 )}
             </section>
 
-            <section id='file-categories' >
+            <section id='file-categories'>
                 <CategoryButton icon={DocIcon} onClick={() => handleClick('all', 'document')} />
                 <CategoryButton icon={ImageIcon} onClick={() => handleClick('all', 'image')} />
                 <CategoryButton icon={VideoIcon} onClick={() => handleClick('all', 'video')} />
                 <CategoryButton icon={MusicIcon} onClick={() => handleClick('all', 'audio')} />
             </section>
 
-            <section id='recent-files' >
+            <section id='recent-files'>
                 <FilesExplorer
                     id='recent'
                     title={t('RecentFiles')}
@@ -109,7 +130,9 @@ export default function Home() {
                     link='/files'
                 />
             </section>
-            <NavBar />
-        </Box >
+            {windowWidth <= 768 ? (
+                <NavBar />
+            ) : ('')}
+        </Box>
     );
 }

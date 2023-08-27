@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import FilesExplorer from '../../components/FilesExplorer';
@@ -24,6 +24,19 @@ export default function Files() {
     const { origin, type } = useParams<IParams>()
 
     const filteredFiles = filterFiles(cloudFiles, search, origin, type);
+    const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowWidth(window.innerWidth);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     return (
         <Box id='files'>
@@ -35,7 +48,9 @@ export default function Files() {
                 files={filteredFiles}
                 layout
             />
-            <NavBar />
+            {windowWidth <= 768 ? (
+                <NavBar />
+            ) : ('')}
         </Box>
     );
 }
