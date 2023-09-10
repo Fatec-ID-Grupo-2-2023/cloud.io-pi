@@ -5,7 +5,6 @@ import AccountIcon from '../../assets/account.svg';
 import CloseIcon from '../../assets/close.svg';
 import LogoutIcon from '../../assets/logout.svg';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import LogoutButton from '../LogoutButton';
 import './style.scss';
 
 interface IProps {
@@ -15,7 +14,7 @@ interface IProps {
 
 export default function ProfileBox({ open, onClose }: IProps) {
     const { t } = useTranslation();
-    const { googleUser } = useContext(GlobalContext);
+    const { user, signOut } = useContext(GlobalContext);
 
     return (
         <Box>
@@ -33,20 +32,19 @@ export default function ProfileBox({ open, onClose }: IProps) {
                     <Box id='modal-modal-description'>
                         <Avatar
                             className='avatar'
-                            src={googleUser?.profileObj.imageUrl ?? AccountIcon}
-                            alt={googleUser?.profileObj.givenName ?? 'User'}
+                            src={user?.photoURL ?? AccountIcon}
+                            alt={user?.displayName ?? 'User'}
                             imgProps={{
                                 referrerPolicy: 'no-referrer'
                             }}
                         />
                         <Box id='user-info'>
-                            <Typography id='user-name'>{googleUser?.profileObj.name}</Typography>
-                            <Typography id='user-email'>{googleUser?.profileObj.email}</Typography>
+                            <Typography id='user-name'>{user?.displayName}</Typography>
+                            <Typography id='user-email'>{user?.email}</Typography>
                         </Box>
                     </Box>
                     <Box id='modal-footer'>
-                        <Button id='logout-button' color='secondary'>
-                            <LogoutButton />
+                        <Button id='logout-button' color='secondary' onClick={signOut}>
                             <img src={LogoutIcon} alt='' />
                             <Typography id='logout-text'>{t('Logout')}</Typography>
                         </Button>

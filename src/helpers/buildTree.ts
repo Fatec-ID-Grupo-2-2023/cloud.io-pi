@@ -40,7 +40,12 @@ export function matchTree(tree: ICloudioFile[]) {
     duplicatedFolders.forEach(folder => {
         const sameFolders = tree.filter(({ name, type }) => name === folder && type === 'folder');
 
-        const matchFolder: ICloudioFile = sameFolders.shift()!;
+        const matchFolder = sameFolders.shift()!;
+
+        // if (!matchFolder) {
+        //     console.warn('No match folder found');
+        //     return;
+        // }
 
         sameFolders.forEach(folder => {
             matchFolder.children = [...matchFolder.children, ...folder.children];

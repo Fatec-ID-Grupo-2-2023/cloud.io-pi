@@ -22,11 +22,11 @@ import { getOriginIcon } from '../../utils/getIcon';
 import './style.scss';
 
 export default function Home() {
-    const { googleUser, cloudStorage: { usage, limit, accounts }, cloudFiles } = useContext(GlobalContext);
+    const { user, cloudStorage, cloudFiles } = useContext(GlobalContext);
     const { t } = useTranslation();
     const history = useHistory();
 
-    const freeStorage = convertSizeFile(limit - usage);
+    const freeStorage = cloudStorage ? convertSizeFile(cloudStorage.limit - cloudStorage.usage) : 0;
 
     const [connectAccount, setConnectAccount] = useState(false);
 
@@ -34,7 +34,9 @@ export default function Home() {
         history.push(`/files/${origin}/${type}`);
     }
 
-    const recentFiles = filterRecentFiles(cloudFiles);
+    const recentFiles = filterRecentFiles(cloudFiles ?? []);
+
+    console.log('jj')
 
     return (
         <Box id='home'>
@@ -71,26 +73,28 @@ export default function Home() {
 
             <section id='cloud-capacity' >
                 <Typography variant='h1' >
-                    {t('HiUser', { user: googleUser?.profileObj.givenName })}
+                    {t('HiUser', { user: user?.displayName })}
                 </Typography>
                 <Typography variant='h2'
                     dangerouslySetInnerHTML={{
                         __html: t('FreeStorageMsg', { freeStorage })
                     }}
                 />
-                <ProgressBar
-                    usedCapacity={usage}
-                    totalCapacity={limit}
-                />
+                {cloudStorage ? (
+                    <ProgressBar
+                        usedCapacity={cloudStorage.usage}
+                        totalCapacity={cloudStorage.limit}
+                    />
+                ) : null}
             </section>
 
             <section id='cloud-accounts' >
-                {accounts.map(({ id, name, usage, limit }, index) => (
+                {cloudStorage ? cloudStorage.accounts.map(({ id, name, usage, limit }, index) => (
                     <CloudAccount key={index} icon={getOriginIcon(id)} title={name} usage={usage} limit={limit} onClick={() => handleClick(id)} />
-                ))}
-                {accounts.length < 2 && (
+                )) : null}
+                {cloudStorage && cloudStorage.accounts.length < 2 ? (
                     <CloudAccountEmpty onClick={() => setConnectAccount(true)} />
-                )}
+                ) : null}
             </section>
 
             <section id='file-categories' >

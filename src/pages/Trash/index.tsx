@@ -14,7 +14,7 @@ export default function Trash() {
     const { trashedFiles } = useContext(GlobalContext);
     const [search, setSearch] = useState('');
 
-    const filteredFiles = filterFiles(trashedFiles, search);
+    const filteredFiles = filterFiles(trashedFiles ?? [], search);
 
     return (
         <Box id='files'>

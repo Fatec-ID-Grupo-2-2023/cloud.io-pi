@@ -6,8 +6,6 @@ import Files from './pages/Files';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Settings from './pages/Settings';
-
-import DropboxLogin from './components/DropboxLogin';
 import Trash from './pages/Trash';
 import ProtectedRoute from './utils/SecureRoute';
 
@@ -23,8 +21,7 @@ export default function Router() {
                     <ProtectedRoute exact path='/files' component={Files} />
                     <ProtectedRoute exact path='/trash' component={Trash} />
                     <ProtectedRoute exact path='/settings' component={Settings} />
-                    <ProtectedRoute path='/home' component={Home} />
-                    <Route path='/' component={DropboxLogin} />
+                    <ProtectedRoute path='/' component={Home} />
                 </Switch>
             </App>
         </GlobalContext.Provider>

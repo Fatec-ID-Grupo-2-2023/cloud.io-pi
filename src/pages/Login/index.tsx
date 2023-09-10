@@ -1,29 +1,49 @@
-import { Box, Typography } from '@mui/material';
-import { gapi } from 'gapi-script';
-import { useEffect } from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
+import { getRedirectResult } from 'firebase/auth';
+import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import GoogleIcon from '../../assets/google.svg';
 import LogoIcon from '../../assets/logo.svg';
-import LoginButton from '../../components/LoginButton';
+import { auth } from '../../auth/firebase';
+import { GlobalContext } from '../../contexts/GlobalContext';
+import { googleLogin } from './service';
 import './style.scss';
 
 export default function Login() {
 	const { t } = useTranslation();
+	const history = useHistory();
+
+	const { googleSignIn, user } = useContext(GlobalContext);
 
 	useEffect(() => {
-		const clientId = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID;
-		const apiKey = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY;
-		const scope = 'https://www.googleapis.com/auth/drive';
+		console.log('entrou')
+		getRedirectResult(auth).then((result) => {
+			console.log('entrou fundinho')
+			if (result) {
+				console.log('entrou fundo')
+				switch (result.providerId) {
+					case 'google.com':
+						console.log('entrou fundão')
+						googleSignIn(result);
+						break;
+					default:
+						console.error('Provider not supported');
+						break;
+				}
+			}
+		}).catch((error) => {
+			console.error(error);
+		});
+	}, [googleSignIn])
 
-		function start() {
-			gapi.client.init({
-				apiKey,
-				clientId,
-				scope
-			});
+	useEffect(() => {
+		if (user) {
+			history.push('/');
 		}
+	}, [user, history]);
 
-		gapi.load('client:auth2', start);
-	}, [gapi]);
+	console.log('kk')
 
 	return (
 		<Box id='login'>
@@ -43,7 +63,14 @@ export default function Login() {
 						{t('CloudioLoginSubtitle')}
 					</Typography>
 				</Box>
-				<LoginButton id='login-button' text={t('LoginWithGoogle')} />
+				<Box id="login-buttons">
+					<IconButton
+						className='login-icon-button'
+						onClick={googleLogin}
+					>
+						<img src={GoogleIcon} alt="google" />
+					</IconButton>
+				</Box>
 			</Box>
 		</Box>
 	);
