@@ -3,11 +3,12 @@ import { getRedirectResult } from 'firebase/auth';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import GithubIcon from '../../assets/github.svg';
 import GoogleIcon from '../../assets/google.svg';
 import LogoIcon from '../../assets/logo.svg';
 import { auth } from '../../auth/firebase';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import { googleLogin } from './service';
+import { githubLogin, googleLogin, linkAccounts } from './service';
 import './style.scss';
 
 export default function Login() {
@@ -17,23 +18,18 @@ export default function Login() {
 	const { googleSignIn, user } = useContext(GlobalContext);
 
 	useEffect(() => {
-		console.log('entrou')
 		getRedirectResult(auth).then((result) => {
-			console.log('entrou fundinho')
-			if (result) {
-				console.log('entrou fundo')
-				switch (result.providerId) {
-					case 'google.com':
-						console.log('entrou fundão')
-						googleSignIn(result);
-						break;
-					default:
-						console.error('Provider not supported');
-						break;
-				}
+			if (result && result.providerId === 'google.com') {
+				googleSignIn(result);
 			}
-		}).catch((error) => {
-			console.error(error);
+		}).catch((err) => {
+			if (err.code === 'auth/account-exists-with-different-credential') {
+				//TODO: Create a message to the user
+
+				linkAccounts(err);
+			} else {
+				console.error(err);
+			}
 		});
 	}, [googleSignIn])
 
@@ -66,9 +62,15 @@ export default function Login() {
 				<Box id="login-buttons">
 					<IconButton
 						className='login-icon-button'
-						onClick={googleLogin}
+						onClick={() => googleLogin()}
 					>
 						<img src={GoogleIcon} alt="google" />
+					</IconButton>
+					<IconButton
+						className='login-icon-button'
+						onClick={githubLogin}
+					>
+						<img src={GithubIcon} alt="github" />
 					</IconButton>
 				</Box>
 			</Box>

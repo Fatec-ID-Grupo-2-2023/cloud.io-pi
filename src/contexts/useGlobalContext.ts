@@ -1,4 +1,5 @@
-import { GoogleAuthProvider, User, UserCredential, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
+import { FirebaseError } from 'firebase/app';
+import { GithubAuthProvider, GoogleAuthProvider, User, UserCredential, signOut as firebaseSignOut, linkWithCredential, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../auth/firebase';
@@ -19,21 +20,37 @@ export default function useGlobalContext(): IGlobalContext {
         i18n.changeLanguage(language);
     }, [i18n, language]);
 
-    useEffect(() => {
-        const _googleToken = JSON.parse(localStorage.getItem('@cloudio:googleToken') ?? '{}') as IToken;
-
-        if (_googleToken.access_token) {
-            setGoogleToken(_googleToken);
-        }
-
-        const _dropboxToken = JSON.parse(localStorage.getItem('@cloudio:dropboxToken') ?? '{}') as IToken;
-
-        if (_dropboxToken.access_token) {
-            setDropboxToken(_dropboxToken);
-        }
-    }, []);
-
     const [user, setUser] = useState<User>();
+
+    useEffect(() => {
+        if (user) {
+            const _googleToken = JSON.parse(localStorage.getItem('@cloudio:googleToken') ?? '{}') as IToken;
+
+            if (_googleToken.access_token) {
+                setGoogleToken(_googleToken);
+            }
+
+            const _dropboxToken = JSON.parse(localStorage.getItem('@cloudio:dropboxToken') ?? '{}') as IToken;
+
+            if (_dropboxToken.access_token) {
+                setDropboxToken(_dropboxToken);
+            }
+
+            const linkAccount = JSON.parse(sessionStorage.getItem('@cloudio:linkAccount') ?? '{}') as FirebaseError;
+
+            const credential = GithubAuthProvider.credentialFromError(linkAccount);
+
+            if (credential) {
+                linkWithCredential(user, credential).catch((err) => {
+                    console.error(err);
+                }).finally(() => {
+                    sessionStorage.removeItem('@cloudio:linkAccount');
+                });
+
+            }
+        }
+    }, [user]);
+
 
     const [googleToken, setGoogleToken] = useState<IToken>();
     const [dropboxToken, setDropboxToken] = useState<IToken>();
