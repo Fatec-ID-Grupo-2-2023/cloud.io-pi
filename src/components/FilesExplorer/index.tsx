@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Grid, IconButton, Link, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Grid, IconButton, Link, Skeleton, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -99,7 +99,7 @@ export default function FilesExplorer({ id, title, link, linkText, layout, files
                 spacing={2}
                 className='content'
             >
-                {currentFiles.filter((file) => file).map(({ id, name, type, size, modifiedTime, handleClick, children, origin }, index) => (
+                {currentFiles.length ? currentFiles.filter((file) => file).map(({ id, name, type, size, modifiedTime, handleClick, children, origin }, index) => (
                     <FileListItem
                         key={index}
                         isList={currentLayout === 'list'}
@@ -110,6 +110,8 @@ export default function FilesExplorer({ id, title, link, linkText, layout, files
                         onClick={() => onFileClick(id, name, children, handleClick)}
                         origin={origin}
                     />
+                )) : Array(5).fill(0).map((_, key) => (
+                    <Skeleton key={key} variant="rounded" className='skeleton-file' />
                 ))}
             </Grid>
         </Box>
