@@ -24,5 +24,6 @@
   "LoginWithGoogle": "Login with Google",
   "Upload": "Upload",
   "ConnectAccount": "Connect a new account",
-  "DropBox": "DropBox"
+  "Dropbox": "Dropbox",
+  "GoogleDrive": "Google Drive"
 }
