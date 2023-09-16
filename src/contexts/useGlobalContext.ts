@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, User, UserCredential, onAuthStateChanged } from 'firebase/auth';
+import { GoogleAuthProvider, User, UserCredential, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { auth } from '../auth/firebase';
@@ -31,7 +31,7 @@ export default function useGlobalContext(): IGlobalContext {
         if (_dropboxToken.access_token) {
             setDropboxToken(_dropboxToken);
         }
-    }, [])
+    }, []);
 
     const [user, setUser] = useState<User>();
 
@@ -40,7 +40,10 @@ export default function useGlobalContext(): IGlobalContext {
 
     async function signOut() {
         localStorage.removeItem('@cloudio:token');
+        localStorage.removeItem('@cloudio:dropboxToken');
+        localStorage.removeItem('@cloudio:googleToken');
         setUser(undefined);
+        firebaseSignOut(auth);
     }
 
     onAuthStateChanged(auth, async (_user) => {
