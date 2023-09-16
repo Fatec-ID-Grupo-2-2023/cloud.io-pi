@@ -2,6 +2,7 @@ import { FirebaseError } from 'firebase/app';
 import { GithubAuthProvider, GoogleAuthProvider, User, UserCredential, signOut as firebaseSignOut, linkWithCredential, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import { auth } from '../auth/firebase';
 import { buildTree, matchTree } from '../helpers/buildTree';
 import { useLocalStorage } from '../helpers/useLocalStorage';
@@ -13,6 +14,7 @@ import { deepCopy } from '../utils/deepCopy';
 import { IGlobalContext } from './GlobalContext';
 
 export default function useGlobalContext(): IGlobalContext {
+    const history = useHistory();
     const { i18n } = useTranslation();
     const [language, setLanguage] = useLocalStorage('language', 'en');
 
@@ -93,65 +95,12 @@ export default function useGlobalContext(): IGlobalContext {
         }
     }
 
-    async function dropboxSignIn(user?: IToken) {
-        if (user && user.access_token && user.account_id && user.token_type && user.expires_in && user.scope) {
-            if (typeof user.access_token !== 'string') {
-                throw new Error('Invalid access token');
-            }
+    async function dropboxSignIn(credentials: IToken) {
+        localStorage.setItem('@cloudio:dropboxToken', JSON.stringify(credentials));
 
-            if (typeof user.account_id !== 'string') {
-                throw new Error('Invalid account id');
-            }
+        setDropboxToken(credentials);
 
-            if (typeof user.token_type !== 'string') {
-                throw new Error('Invalid token type');
-            }
-
-            if (typeof user.scope !== 'string') {
-                throw new Error('Invalid scope');
-            }
-
-            const _dropboxToken = {
-                access_token: user.access_token,
-                account_id: user.account_id,
-                token_type: user.token_type,
-                expires_in: Number(user.expires_in),
-                scope: user.scope,
-            };
-
-            localStorage.setItem('@cloudio:dropboxToken', JSON.stringify(_dropboxToken));
-
-            setDropboxToken(_dropboxToken);
-        } else {
-            const clientId = import.meta.env.VITE_DROPBOX_CLIENT_ID;
-
-            // if (token) {
-            //     const clientSecret = import.meta.env.VITE_DROPBOX_CLIENT_SECRET;
-
-            //     axios.get('https://api.dropbox.com/oauth2/token', {
-            //         params: {
-            //             refresh_token: token,
-            //             grant_type: 'refresh_token',
-            //             client_id: clientId,
-            //             client_secret: clientSecret
-            //         }
-            //     });
-            // } else {
-
-            // const response = await axios.get('https://api.dropbox.com/oauth2/authorize', {
-            //     params: {
-            //         response_type: 'code',
-            //         client_id: clientId,
-            //         redirect_uri: window.location.origin,
-            //         token_access_type: 'offline'
-            //     }
-            // });
-
-            // console.log(response);
-
-            window.open(`https://dropbox.com/oauth2/authorize?response_type=token&client_id=${clientId}&redirect_uri=${window.location.origin}`, '_self');
-        }
-        // }
+        history.push('/');
     }
 
 

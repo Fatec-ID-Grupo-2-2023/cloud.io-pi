@@ -5,6 +5,7 @@ import useGlobalContext from './contexts/useGlobalContext';
 import Files from './pages/Files';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import LoginCallback from './pages/LoginCallback';
 import Settings from './pages/Settings';
 import Trash from './pages/Trash';
 import ProtectedRoute from './utils/SecureRoute';
@@ -17,6 +18,7 @@ export default function Router() {
             <App>
                 <Switch>
                     <Route exact path='/login' component={Login} />
+                    <Route exact path='/login/callback' component={LoginCallback} />
                     <ProtectedRoute path='/files/:origin/:type' component={Files} />
                     <ProtectedRoute exact path='/files' component={Files} />
                     <ProtectedRoute exact path='/trash' component={Trash} />

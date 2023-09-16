@@ -1,4 +1,4 @@
-import { Box, List, ListItem, ListItemButton, ListItemIcon, Modal, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -11,6 +11,8 @@ import CloudAccount from '../../components/CloudAccount';
 import CloudAccountEmpty from '../../components/CloudAccountEmpty';
 import FilesExplorer from '../../components/FilesExplorer';
 import Header from '../../components/Header';
+import ListModal from '../../components/ListModal';
+import { ListModalItem } from '../../components/ListModal/model';
 import NavBar from '../../components/NavBar';
 import ProgressBar from '../../components/ProgressBar';
 import { GlobalContext } from '../../contexts/GlobalContext';
@@ -19,6 +21,7 @@ import { dropboxLogin } from '../../services/fetchDropboxData';
 import { convertSizeFile } from '../../utils/convertUnits';
 import { filterRecentFiles } from '../../utils/filterFiles';
 import { getOriginIcon } from '../../utils/getIcon';
+import { googleLogin } from '../Login/service';
 import './style.scss';
 
 export default function Home() {
@@ -36,40 +39,29 @@ export default function Home() {
 
     const recentFiles = filterRecentFiles(cloudFiles ?? []);
 
-    console.log('jj')
+    const supportedAccounts: ListModalItem[] = [
+        {
+            text: t('GoogleDrive'),
+            icon: getOriginIcon('google-drive'),
+            onClick: () => googleLogin()
+        },
+        {
+            text: t('Dropbox'),
+            icon: getOriginIcon('dropbox'),
+            onClick: dropboxLogin
+        }
+    ];
 
     return (
         <Box id='home'>
             <Header />
 
-            <Modal
-                id='connect-account-modal'
+            <ListModal
                 open={connectAccount}
                 onClose={() => setConnectAccount(false)}
-            >
-                <Box id='connect-account-box' >
-                    <Typography variant='h1' >
-                        {t('ConnectAccount')}
-                    </Typography>
-                    <List>
-                        <ListItem>
-                            <ListItemButton
-                                className='connect-account-item'
-                                onClick={dropboxLogin}
-                            >
-                                <ListItemIcon
-                                    className='connect-account-icon'
-                                >
-                                    <img src={getOriginIcon('dropbox')} alt='DropBox' />
-                                </ListItemIcon>
-                                <Typography variant='h2' >
-                                    {t('DropBox')}
-                                </Typography>
-                            </ListItemButton>
-                        </ListItem>
-                    </List>
-                </Box>
-            </Modal>
+                title={t('ConnectAccount')}
+                items={supportedAccounts}
+            />
 
             <section id='cloud-capacity' >
                 <Typography variant='h1' >
@@ -92,27 +84,31 @@ export default function Home() {
                 {cloudStorage ? cloudStorage.accounts.map(({ id, name, usage, limit }, index) => (
                     <CloudAccount key={index} icon={getOriginIcon(id)} title={name} usage={usage} limit={limit} onClick={() => handleClick(id)} />
                 )) : null}
-                {cloudStorage && cloudStorage.accounts.length < 2 ? (
+                {cloudStorage && cloudStorage.accounts.length < supportedAccounts.length ? (
                     <CloudAccountEmpty onClick={() => setConnectAccount(true)} />
                 ) : null}
             </section>
 
-            <section id='file-categories' >
-                <CategoryButton icon={DocIcon} onClick={() => handleClick('all', 'document')} />
-                <CategoryButton icon={ImageIcon} onClick={() => handleClick('all', 'image')} />
-                <CategoryButton icon={VideoIcon} onClick={() => handleClick('all', 'video')} />
-                <CategoryButton icon={MusicIcon} onClick={() => handleClick('all', 'audio')} />
-            </section>
+            {cloudStorage && cloudStorage.accounts ? (
+                <>
+                    <section id='file-categories' >
+                        <CategoryButton icon={DocIcon} onClick={() => handleClick('all', 'document')} />
+                        <CategoryButton icon={ImageIcon} onClick={() => handleClick('all', 'image')} />
+                        <CategoryButton icon={VideoIcon} onClick={() => handleClick('all', 'video')} />
+                        <CategoryButton icon={MusicIcon} onClick={() => handleClick('all', 'audio')} />
+                    </section>
 
-            <section id='recent-files' >
-                <FilesExplorer
-                    id='recent'
-                    title={t('RecentFiles')}
-                    files={recentFiles}
-                    linkText={t('ViewAll')}
-                    link='/files'
-                />
-            </section>
+                    <section id='recent-files' >
+                        <FilesExplorer
+                            id='recent'
+                            title={t('RecentFiles')}
+                            files={recentFiles}
+                            linkText={t('ViewAll')}
+                            link='/files'
+                        />
+                    </section>
+                </>
+            ) : null}
             <NavBar />
         </Box >
     );

@@ -12,10 +12,10 @@ import { githubLogin, googleLogin, linkAccounts } from './service';
 import './style.scss';
 
 export default function Login() {
+	const { googleSignIn, user } = useContext(GlobalContext);
+
 	const { t } = useTranslation();
 	const history = useHistory();
-
-	const { googleSignIn, user } = useContext(GlobalContext);
 
 	useEffect(() => {
 		getRedirectResult(auth).then((result) => {
@@ -38,8 +38,6 @@ export default function Login() {
 			history.push('/');
 		}
 	}, [user, history]);
-
-	console.log('kk')
 
 	return (
 		<Box id='login'>

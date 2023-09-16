@@ -7,7 +7,7 @@ export interface IGlobalContext {
     user?: User;
 
     googleSignIn: (user: UserCredential) => void;
-    dropboxSignIn: (user?: IToken) => void;
+    dropboxSignIn: (user: IToken) => void;
 
     signOut: () => void;
 
