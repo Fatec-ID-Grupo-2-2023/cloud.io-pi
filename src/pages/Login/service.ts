@@ -1,5 +1,5 @@
 import { FirebaseError } from 'firebase/app';
-import { AuthProvider, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, OAuthCredential, User, fetchSignInMethodsForEmail, linkWithCredential, signInWithRedirect } from 'firebase/auth';
+import { AuthProvider, FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, OAuthCredential, TwitterAuthProvider, User, fetchSignInMethodsForEmail, linkWithCredential, signInWithRedirect } from 'firebase/auth';
 import { auth } from '../../auth/firebase';
 
 function login(provider: AuthProvider) {
@@ -37,6 +37,12 @@ export function facebookLogin() {
     login(provider);
 }
 
+export function twitterLogin() {
+    const provider = new TwitterAuthProvider();
+
+    login(provider);
+}
+
 export function linkAccounts(err: FirebaseError) {
     if (err.customData) {
         const email = err.customData.email as string;
@@ -69,6 +75,9 @@ export function linkAccountCheck(user: User) {
             break;
         case 'facebook.com':
             credential = FacebookAuthProvider.credentialFromError(linkAccount);
+            break;
+        case 'twitter.com':
+            credential = TwitterAuthProvider.credentialFromError(linkAccount);
             break;
         default:
             console.error('Provider not supported to link account check');

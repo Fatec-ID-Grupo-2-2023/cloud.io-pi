@@ -7,9 +7,10 @@ import FacebookIcon from '../../assets/facebook.svg';
 import GithubIcon from '../../assets/github.svg';
 import GoogleIcon from '../../assets/google.svg';
 import LogoIcon from '../../assets/logo.svg';
+import TwitterIcon from '../../assets/twitter.svg';
 import { auth } from '../../auth/firebase';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import { facebookLogin, githubLogin, googleLogin, linkAccounts } from './service';
+import { facebookLogin, githubLogin, googleLogin, linkAccounts, twitterLogin } from './service';
 import './style.scss';
 
 export default function Login() {
@@ -76,6 +77,12 @@ export default function Login() {
 						onClick={facebookLogin}
 					>
 						<img src={FacebookIcon} alt="Facebook" />
+					</IconButton>
+					<IconButton
+						className='login-icon-button'
+						onClick={twitterLogin}
+					>
+						<img src={TwitterIcon} alt="Twitter" />
 					</IconButton>
 				</Box>
 			</Box>
