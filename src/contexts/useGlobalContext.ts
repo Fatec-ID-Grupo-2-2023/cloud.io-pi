@@ -1,5 +1,4 @@
-import { FirebaseError } from 'firebase/app';
-import { GithubAuthProvider, GoogleAuthProvider, User, UserCredential, signOut as firebaseSignOut, linkWithCredential, onAuthStateChanged } from 'firebase/auth';
+import { GoogleAuthProvider, User, UserCredential, signOut as firebaseSignOut, onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +7,7 @@ import { buildTree, matchTree } from '../helpers/buildTree';
 import { useLocalStorage } from '../helpers/useLocalStorage';
 import { ICloudioAccount, ICloudioCapacity, ICloudioFile, ICloudioStorage } from '../models/cloud';
 import { IToken } from '../models/general';
+import { linkAccountCheck } from '../pages/Login/service';
 import { getDropboxAbout, getDropboxFiles } from '../services/fetchDropboxData';
 import { getGoogleDriveAbout, getGoogleDriveFiles } from '../services/fetchGoogleDriveData';
 import { deepCopy } from '../utils/deepCopy';
@@ -38,18 +38,7 @@ export default function useGlobalContext(): IGlobalContext {
                 setDropboxToken(_dropboxToken);
             }
 
-            const linkAccount = JSON.parse(sessionStorage.getItem('@cloudio:linkAccount') ?? '{}') as FirebaseError;
-
-            const credential = GithubAuthProvider.credentialFromError(linkAccount);
-
-            if (credential) {
-                linkWithCredential(user, credential).catch((err) => {
-                    console.error(err);
-                }).finally(() => {
-                    sessionStorage.removeItem('@cloudio:linkAccount');
-                });
-
-            }
+            linkAccountCheck(user);
         }
     }, [user]);
 

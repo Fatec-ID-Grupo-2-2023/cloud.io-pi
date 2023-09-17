@@ -3,12 +3,13 @@ import { getRedirectResult } from 'firebase/auth';
 import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import FacebookIcon from '../../assets/facebook.svg';
 import GithubIcon from '../../assets/github.svg';
 import GoogleIcon from '../../assets/google.svg';
 import LogoIcon from '../../assets/logo.svg';
 import { auth } from '../../auth/firebase';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import { githubLogin, googleLogin, linkAccounts } from './service';
+import { facebookLogin, githubLogin, googleLogin, linkAccounts } from './service';
 import './style.scss';
 
 export default function Login() {
@@ -62,13 +63,19 @@ export default function Login() {
 						className='login-icon-button'
 						onClick={() => googleLogin()}
 					>
-						<img src={GoogleIcon} alt="google" />
+						<img src={GoogleIcon} alt="Google" />
 					</IconButton>
 					<IconButton
 						className='login-icon-button'
 						onClick={githubLogin}
 					>
-						<img src={GithubIcon} alt="github" />
+						<img src={GithubIcon} alt="Github" />
+					</IconButton>
+					<IconButton
+						className='login-icon-button'
+						onClick={facebookLogin}
+					>
+						<img src={FacebookIcon} alt="Facebook" />
 					</IconButton>
 				</Box>
 			</Box>

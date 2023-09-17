@@ -125,7 +125,7 @@ export async function dropboxLogin() {
         clientSecret
     });
 
-    const authUrl = (await dropbox.getAuthenticationUrl(`${window.location.origin}/login`)).toString();
+    const authUrl = (await dropbox.getAuthenticationUrl(`${window.location.origin}/login/callback`)).toString();
 
     window.open(authUrl, '_self');
 }

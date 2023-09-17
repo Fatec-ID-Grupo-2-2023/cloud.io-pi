@@ -89,7 +89,7 @@ export default function Home() {
                 ) : null}
             </section>
 
-            {cloudStorage && cloudStorage.accounts ? (
+            {cloudStorage && cloudStorage.accounts.length ? (
                 <>
                     <section id='file-categories' >
                         <CategoryButton icon={DocIcon} onClick={() => handleClick('all', 'document')} />
