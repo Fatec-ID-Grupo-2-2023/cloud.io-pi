@@ -10,6 +10,12 @@
         width: 30px;
         height: 30px;
     }
+    @media(min-width: 728px) {
+        .cloudio-title{
+         margin: 10px;
+         font-size: 38px;
+        }
+     }
 
     #close-button {
         position: absolute;

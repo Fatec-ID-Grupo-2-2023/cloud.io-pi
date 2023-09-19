@@ -7,14 +7,11 @@ import Logo from '../../assets/logo-and-name.svg';
 import LogoutIcon from '../../assets/logout.svg';
 import SettingsIcon from '../../assets/settings.svg';
 import HomeIcon from '../../assets/home.svg';
-import HomeActiveIcon from '../../assets/home-active.svg';
-import FolderActiveIcon from '../../assets/folder-active.svg';
 import FolderIcon from '../../assets/folder.svg';
 import ProgressBar from '../../components/ProgressBar';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import LogoutButton from '../LogoutButton';
 import './style.scss';
-import Home from '../../pages/Home';
 
 interface IProps {
 	open: boolean;
