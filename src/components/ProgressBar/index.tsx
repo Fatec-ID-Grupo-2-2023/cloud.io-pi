@@ -19,7 +19,7 @@ export default function ProgressBar({ usedCapacity, totalCapacity }: IProps) {
                 value={progress}
             />
 
-            {totalCapacity && (
+            {totalCapacity ? (
                 <Box className='labels'>
                     <Typography
                         variant='caption'
@@ -36,7 +36,7 @@ export default function ProgressBar({ usedCapacity, totalCapacity }: IProps) {
                         {convertSizeFile(totalCapacity)}
                     </Typography>
                 </Box>
-            )}
+            ) : null}
         </Box>
     );
 }

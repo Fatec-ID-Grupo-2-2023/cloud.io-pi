@@ -23,7 +23,6 @@ export default function Files() {
 
     const { origin, type } = useParams<IParams>()
 
-    const filteredFiles = filterFiles(cloudFiles, search, origin, type);
     const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
     useEffect(() => {
@@ -37,6 +36,8 @@ export default function Files() {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+
+    const filteredFiles = filterFiles(cloudFiles ?? [], search, origin, type);
 
     return (
         <Box id='files'>

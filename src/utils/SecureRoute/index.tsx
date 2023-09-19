@@ -10,21 +10,17 @@ interface IProps {
 
 export default function ProtectedRoute({ exact, path, component }: IProps) {
     const history = useHistory();
-    const { googleUser } = useContext(GlobalContext);
+    const { user } = useContext(GlobalContext);
 
     useEffect(() => {
-        if (!googleUser) {
+        if (!user) {
             history.push('/login');
         }
-    }, [googleUser, history]);
+    }, [user, history]);
 
     return (
         <>
-            {
-                googleUser && (
-                    <Route exact={exact} path={path} component={component} />
-                )
-            }
+            {user && <Route exact={exact} path={path} component={component} />}
         </>
     );
 }

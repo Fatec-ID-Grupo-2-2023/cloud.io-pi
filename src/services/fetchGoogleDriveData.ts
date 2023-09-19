@@ -106,7 +106,7 @@ function getType(webViewLink: string, fileExtension?: string) {
     return type;
 }
 
-export async function uploadFile(file: any, token?: string) {
+export async function uploadFile(file: File, token?: string) {
     const fileMetadata = {
         name: file.name
     };

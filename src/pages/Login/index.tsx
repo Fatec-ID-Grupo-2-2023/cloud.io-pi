@@ -1,29 +1,45 @@
-import { Box, Typography } from '@mui/material';
-import { gapi } from 'gapi-script';
-import { useEffect } from 'react';
+import { Box, IconButton, Typography } from '@mui/material';
+import { getRedirectResult } from 'firebase/auth';
+import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import FacebookIcon from '../../assets/facebook.svg';
+import GithubIcon from '../../assets/github.svg';
+import GoogleIcon from '../../assets/google.svg';
 import LogoIcon from '../../assets/logo.svg';
-import LoginButton from '../../components/LoginButton';
+import TwitterIcon from '../../assets/twitter.svg';
+import { auth } from '../../auth/firebase';
+import { GlobalContext } from '../../contexts/GlobalContext';
+import { facebookLogin, githubLogin, googleLogin, linkAccounts, twitterLogin } from './service';
 import './style.scss';
 
 export default function Login() {
+	const { googleSignIn, user } = useContext(GlobalContext);
+
 	const { t } = useTranslation();
+	const history = useHistory();
 
 	useEffect(() => {
-		const clientId = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID;
-		const apiKey = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY;
-		const scope = 'https://www.googleapis.com/auth/drive';
+		getRedirectResult(auth).then((result) => {
+			if (result && result.providerId === 'google.com') {
+				googleSignIn(result);
+			}
+		}).catch((err) => {
+			if (err.code === 'auth/account-exists-with-different-credential') {
+				//TODO: Create a message to the user
 
-		function start() {
-			gapi.client.init({
-				apiKey,
-				clientId,
-				scope
-			});
+				linkAccounts(err);
+			} else {
+				console.error(err);
+			}
+		});
+	}, [googleSignIn])
+
+	useEffect(() => {
+		if (user) {
+			history.push('/');
 		}
-
-		gapi.load('client:auth2', start);
-	}, [gapi]);
+	}, [user, history]);
 
 	return (
 		<Box id='login'>
@@ -43,7 +59,32 @@ export default function Login() {
 						{t('CloudioLoginSubtitle')}
 					</Typography>
 				</Box>
-				<LoginButton id='login-button' text={t('LoginWithGoogle')} />
+				<Box id="login-buttons">
+					<IconButton
+						className='login-icon-button'
+						onClick={() => googleLogin()}
+					>
+						<img src={GoogleIcon} alt="Google" />
+					</IconButton>
+					<IconButton
+						className='login-icon-button'
+						onClick={githubLogin}
+					>
+						<img src={GithubIcon} alt="Github" />
+					</IconButton>
+					<IconButton
+						className='login-icon-button'
+						onClick={facebookLogin}
+					>
+						<img src={FacebookIcon} alt="Facebook" />
+					</IconButton>
+					<IconButton
+						className='login-icon-button'
+						onClick={twitterLogin}
+					>
+						<img src={TwitterIcon} alt="Twitter" />
+					</IconButton>
+				</Box>
 			</Box>
 		</Box>
 	);

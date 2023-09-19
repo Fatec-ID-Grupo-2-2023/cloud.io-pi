@@ -11,7 +11,7 @@ import './style.scss';
 export default function Header() {
     const [sidebar, setSidebar] = useState(false);
     const [profileBox, setProfileBox] = useState(false);
-    const { googleUser } = useContext(GlobalContext);
+    const { user } = useContext(GlobalContext);
 
     return (
         <Box id='header'>
@@ -23,8 +23,8 @@ export default function Header() {
             <IconButton color='secondary' component='label' onClick={() => setProfileBox(true)}>
                 <Avatar
                     className='avatar'
-                    src={googleUser?.profileObj.imageUrl ?? AccountIcon}
-                    alt={googleUser?.profileObj.givenName ?? 'User'}
+                    src={user?.photoURL ?? AccountIcon}
+                    alt={user?.displayName ?? 'User'}
                     imgProps={{
                         referrerPolicy: 'no-referrer'
                     }}
