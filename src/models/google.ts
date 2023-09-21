@@ -1,7 +1,3 @@
-import { GoogleLoginResponse } from 'react-google-login';
-
-export type IGoogleUser = GoogleLoginResponse | undefined;
-
 export interface IGoogleAPIFiles {
     files: IGoogleFile[];
     nextPageToken: string;

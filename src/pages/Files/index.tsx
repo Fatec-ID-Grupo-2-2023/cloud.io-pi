@@ -23,7 +23,7 @@ export default function Files() {
 
     const { origin, type } = useParams<IParams>()
 
-    const filteredFiles = filterFiles(cloudFiles, search, origin, type);
+    const filteredFiles = filterFiles(cloudFiles ?? [], search, origin, type);
 
     return (
         <Box id='files'>

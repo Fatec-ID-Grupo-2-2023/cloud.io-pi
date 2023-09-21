@@ -8,7 +8,6 @@ import LogoutIcon from '../../assets/logout.svg';
 import SettingsIcon from '../../assets/settings.svg';
 import ProgressBar from '../../components/ProgressBar';
 import { GlobalContext } from '../../contexts/GlobalContext';
-import LogoutButton from '../LogoutButton';
 import './style.scss';
 
 interface IProps {
@@ -19,7 +18,7 @@ interface IProps {
 export default function Sidebar({ open, onClose }: IProps) {
     const { t } = useTranslation();
     const history = useHistory();
-    const { cloudStorage: { usage, limit } } = useContext(GlobalContext);
+    const { cloudStorage, signOut } = useContext(GlobalContext);
 
     const items = [
         // {
@@ -49,7 +48,9 @@ export default function Sidebar({ open, onClose }: IProps) {
                     <img src={Cloud} alt='' />
                     <Typography variant='body1'>{t('Storage')}</Typography>
                 </Box>
-                <ProgressBar usedCapacity={usage} totalCapacity={limit} />
+                {cloudStorage ? (
+                    <ProgressBar usedCapacity={cloudStorage.usage} totalCapacity={cloudStorage.limit} />
+                ) : null}
             </Box>
             <List className='content'>
                 {items.map(({ text, img, onClick }, index) => (
@@ -63,8 +64,7 @@ export default function Sidebar({ open, onClose }: IProps) {
                     </ListItem>
                 ))}
                 <ListItem disablePadding>
-                    <ListItemButton>
-                        <LogoutButton />
+                    <ListItemButton onClick={signOut}>
                         <ListItemIcon>
                             <img src={LogoutIcon} alt='' />
                         </ListItemIcon>
