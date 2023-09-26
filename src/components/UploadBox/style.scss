@@ -1,0 +1,19 @@
+#upload-box {
+    background-color: var(--black2);
+    margin: 5vh 24px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+
+    .upload-title {
+        color: var(--black6);
+        width: 100%;
+        text-align: center;
+    }
+
+    .upload-button {
+        margin-top: 6px;
+        justify-content: end;
+    }
+}

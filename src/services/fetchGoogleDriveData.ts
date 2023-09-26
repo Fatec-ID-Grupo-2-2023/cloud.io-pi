@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { ICloudioCapacity, ICloudioFile } from '../models/cloud';
-import { IGoogleAPIAbout, IGoogleAPIFiles, IGoogleFile } from '../models/google';
+import { ICloudioCapacity, ICloudioFile, ICloudioUploadOptions } from '../models/cloud';
+import { IGoogleAPIAbout, IGoogleAPIFiles, IGoogleFile, IGoogleUpload } from '../models/google';
 import getFileType from '../utils/getFileType';
 
 const api = axios.create({
@@ -25,7 +25,6 @@ export async function getGoogleDriveFiles(token: string): Promise<ICloudioFile[]
         if (status !== 200) {
             throw new Error('Error fetching Google Drive files');
         }
-
 
         rawFiles = [...rawFiles, ...data.files];
         nextPageToken = data.nextPageToken;
@@ -106,30 +105,30 @@ function getType(webViewLink: string, fileExtension?: string) {
     return type;
 }
 
-export async function uploadFile(file: File, token?: string) {
-    const fileMetadata = {
-        name: file.name
-    };
-
+export async function uploadFile(file: File, token?: string, options?: ICloudioUploadOptions) {
     const form = new FormData();
-    form.append('metadata', new Blob([JSON.stringify(fileMetadata)], { type: 'application/json' }));
     form.append('file', file);
 
-    const response = api.post(
-        '/upload/drive/v3/files',
+    const metadata = {
+        name: options?.filename ?? file.name
+    };
+
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+
+    const response = await api.post<IGoogleUpload>(
+        '/upload/drive/v3/files', form,
         {
             headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'multipart/related'
-            },
-            params: {
-                uploadType: 'media',
-            },
-            body: form
+                'Authorization': `Bearer ${token}`,
+            }
         }
     )
 
-    return response;
+    if (response.status !== 200) {
+        throw new Error('Error uploading file to Google Drive');
+    }
+
+    return response.data;
 }
 
 function handleClick(webViewLink: string, webContentLink?: string) {

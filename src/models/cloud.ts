@@ -31,6 +31,10 @@ export interface ICloudioCapacity {
     limit: number;
 }
 
+export interface ICloudioUploadOptions {
+    filename?: string;
+}
+
 export type ICloudioOrigin = 'google-drive' | 'dropbox' | 'onedrive' | 'all';
 
 export type ICloudioType = 'folder' | 'image' | 'video' | 'audio' | 'document' | 'text' | 'zip' | 'code' | 'spreadsheet' | 'presentation' | 'pdf' | 'other' | 'all';

@@ -30,5 +30,11 @@ export interface IGoogleAPIAbout {
         usageInDrive: string;
         usageInDriveTrash: string;
     };
+}
 
+export interface IGoogleUpload {
+    id: string;
+    kind: string;
+    name: string;
+    mimeType: string;
 }

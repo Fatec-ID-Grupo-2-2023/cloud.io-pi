@@ -1,6 +1,6 @@
 import { User, UserCredential } from 'firebase/auth';
 import { createContext } from 'react';
-import { ICloudioFile, ICloudioStorage } from '../models/cloud';
+import { ICloudioFile, ICloudioStorage, ICloudioUploadOptions } from '../models/cloud';
 import { ILanguage, IToken } from '../models/general';
 
 export interface IGlobalContext {
@@ -18,6 +18,8 @@ export interface IGlobalContext {
 
     language: ILanguage;
     setLanguage: (language: ILanguage) => void;
+
+    uploadGoogleFile: (file: File, options?: ICloudioUploadOptions) => void;
 }
 
 export const GlobalContext = createContext<IGlobalContext>({} as IGlobalContext);

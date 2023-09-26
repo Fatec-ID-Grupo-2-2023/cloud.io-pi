@@ -5,12 +5,13 @@ import { useHistory } from 'react-router-dom';
 import { auth } from '../auth/firebase';
 import { buildTree, matchTree } from '../helpers/buildTree';
 import { useLocalStorage } from '../helpers/useLocalStorage';
-import { ICloudioAccount, ICloudioCapacity, ICloudioFile, ICloudioStorage } from '../models/cloud';
+import { ICloudioAccount, ICloudioCapacity, ICloudioFile, ICloudioStorage, ICloudioUploadOptions } from '../models/cloud';
 import { IToken } from '../models/general';
 import { linkAccountCheck } from '../pages/Login/service';
 import { getDropboxAbout, getDropboxFiles } from '../services/fetchDropboxData';
-import { getGoogleDriveAbout, getGoogleDriveFiles } from '../services/fetchGoogleDriveData';
+import { getGoogleDriveAbout, getGoogleDriveFiles, uploadFile } from '../services/fetchGoogleDriveData';
 import { deepCopy } from '../utils/deepCopy';
+import getFileType from '../utils/getFileType';
 import { IGlobalContext } from './GlobalContext';
 
 export default function useGlobalContext(): IGlobalContext {
@@ -98,6 +99,37 @@ export default function useGlobalContext(): IGlobalContext {
 
     const [dropboxFiles, setDropboxFiles] = useState<ICloudioFile[]>([]);
     const [dropboxStorage, setDropboxStorage] = useState<ICloudioCapacity>();
+
+    async function uploadGoogleFile(file: File, options?: ICloudioUploadOptions) {
+        const uploadedFile = await uploadFile(file, googleToken?.access_token, options);
+
+        const extension = file.name.split('.').pop();
+
+        const list: ICloudioFile[] = [...googleDriveFiles, {
+            id: uploadedFile.id,
+            name: uploadedFile.name,
+            extension,
+            type: getFileType(extension),
+            trashed: false,
+            modifiedTime: new Date(),
+            handleClick: () => {
+                const url = URL.createObjectURL(file);
+                window.open(url, '_blank');
+            },
+            size: file.size,
+            shared: false,
+            origin: 'google-drive',
+            parent: 'root',
+            children: []
+        }];
+
+        setGoogleDriveFiles(list);
+    }
+
+    useEffect(() => {
+        i18n.changeLanguage(language);
+    }, [i18n, language])
+
 
     const cloudFiles = useMemo<ICloudioFile[]>(() => {
         const gdFiles = deepCopy(googleDriveFiles);
@@ -204,5 +236,6 @@ export default function useGlobalContext(): IGlobalContext {
         cloudStorage,
         language,
         setLanguage,
+        uploadGoogleFile
     }), [user, cloudFiles, trashedFiles, cloudStorage, language, setLanguage]);
 }
