@@ -15,7 +15,7 @@ export default function NavBar() {
     const history = useHistory();
     const { t } = useTranslation();
     const [selectedFile, setSelectedFile] = useState<File>();
-    const { uploadGoogleFile } = useContext(GlobalContext);
+    const { uploadGoogleFile, uploadDropboxFile } = useContext(GlobalContext);
 
     function handleUpload(e: any) {
         if (e.target.files && e.target.files.length > 0) {
@@ -33,7 +33,18 @@ export default function NavBar() {
                     const input = document.getElementById("upload-input") as HTMLInputElement;
                     input.value = '';
                 }}
-                onConfirm={(options) => selectedFile && uploadGoogleFile(selectedFile, options)}
+                onConfirm={(options) => {
+                    if (selectedFile) {
+                        switch (options?.origin) {
+                            case "google-drive":
+                                uploadGoogleFile(selectedFile, options);
+                                break;
+                            case "dropbox":
+                                uploadDropboxFile(selectedFile, options);
+                                break;
+                        }
+                    }
+                }}
                 defaultFilename={selectedFile?.name}
             />
 

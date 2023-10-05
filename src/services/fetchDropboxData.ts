@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DropboxAuth } from 'dropbox';
-import { ICloudioCapacity, ICloudioFile } from "../models/cloud";
+import { ICloudioCapacity, ICloudioFile, ICloudioUploadOptions } from "../models/cloud";
 import { IDropboxAPIFiles, IDropboxFile, IDropboxStorage } from "../models/dropbox";
 import getFileType from '../utils/getFileType';
 
@@ -98,6 +98,25 @@ function getParent(files: IDropboxFile[], _path: string) {
     const parentId = files.find(({ path_display }) => path_display === path)?.id ?? "root";
 
     return parentId;
+}
+
+export async function uploadDbxFile(file: File, token?: string, options?: ICloudioUploadOptions) {
+
+    const response = await axios.post<IDropboxFile>('https://content.dropboxapi.com/2/files/upload', file, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/octet-stream",
+            "Dropbox-API-Arg": JSON.stringify({
+                path: `/${options?.filename ?? file.name}`
+            })
+        }
+    });
+
+    if (response.status !== 200) {
+        throw new Error('Error uploading file');
+    }
+
+    return response.data;
 }
 
 export async function handleClick(token: string, path: string) {

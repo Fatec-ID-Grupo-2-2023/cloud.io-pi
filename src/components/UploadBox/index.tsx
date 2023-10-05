@@ -1,8 +1,12 @@
-import { Alert, AlertColor, Box, Button, Modal, Snackbar, TextField, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Alert, AlertColor, Badge, Box, Button, Checkbox, FormControlLabel, Modal, Snackbar, TextField, Typography } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import StarIcon from '../../assets/star.svg';
+import { GlobalContext } from '../../contexts/GlobalContext';
 import { ICloudioUploadOptions } from '../../models/cloud';
+import { getOriginIcon } from '../../utils/getIcon';
 import ConfirmBox from '../ConfirmBox';
+import IconButton from '../IconButton';
 import './style.scss';
 
 interface IProps {
@@ -16,14 +20,19 @@ export default function UploadBox({ open, onClose, onConfirm, defaultFilename }:
     const [alert, setAlert] = useState<AlertColor>();
     const [filename, setFilename] = useState('');
     const [confirm, setConfirm] = useState(false);
+    const { cloudStorage, recommendedOrigin, setRecommendedOrigin } = useContext(GlobalContext);
     const { t } = useTranslation();
     const extension = defaultFilename?.split('.').pop();
     const validateName = /^[a-zA-Z0-9-_\.\s]+$/;
     const isNameValid = validateName.test(filename ?? '');
+    const recommended = cloudStorage?.accounts.sort((a, b) => (a.limit - a.usage) + (b.limit - b.usage))[0]?.id;
+    const [selectedOrigin, setSelectedOrigin] = useState(recommended);
+    const [useRecommended, setUseRecommended] = useState(false);
 
     function onUpload() {
         try {
-            onConfirm({ filename });
+            onConfirm({ filename, origin: selectedOrigin });
+            setRecommendedOrigin(useRecommended);
             onClose();
             setAlert('success');
         } catch (err) {
@@ -36,7 +45,6 @@ export default function UploadBox({ open, onClose, onConfirm, defaultFilename }:
             setFilename(defaultFilename);
         }
     }, [defaultFilename]);
-
 
     return (
         <Box>
@@ -60,11 +68,11 @@ export default function UploadBox({ open, onClose, onConfirm, defaultFilename }:
                 <Alert
                     severity={alert}
                 >
-                    {t('File uploaded')}
+                    {t('FileUploaded')}
                 </Alert>
             </Snackbar>
             <Modal open={open} onClose={onClose}>
-                <Box id="upload-box">
+                <Box className="upload-box">
                     <Typography variant='h6' className='upload-title'>
                         {t('UploadFile')}
                     </Typography>
@@ -76,19 +84,54 @@ export default function UploadBox({ open, onClose, onConfirm, defaultFilename }:
                         onChange={(e) => setFilename(e.target.value)}
                         helperText={isNameValid ? '' : t('InvalidFilename')}
                     />
-                    <Button
-                        onClick={() => {
-                            if (filename.split('.').pop() !== extension) {
-                                setConfirm(true);
-                            } else {
-                                onUpload();
-                            }
-                        }}
-                        disabled={!isNameValid}
-                        className="upload-button"
-                    >
-                        Upload
-                    </Button>
+                    {!recommendedOrigin && cloudStorage ? (
+                        <Box className="upload-origin">
+                            <Box className="icons">
+                                {cloudStorage.accounts.map(({ id }, index) =>
+                                    id === recommended ? (
+                                        <Badge key={index} color={undefined} className="star-badge" badgeContent={<img src={StarIcon} className='star' />}>
+                                            <IconButton icon={getOriginIcon(id)} onClick={() => setSelectedOrigin(id)} className={id === selectedOrigin ? "icon-active" : undefined} />
+                                        </Badge>
+                                    ) : (
+                                        <IconButton
+                                            key={index}
+                                            icon={getOriginIcon(id)}
+                                            onClick={() => {
+                                                setSelectedOrigin(id);
+                                                setUseRecommended(false);
+                                            }}
+                                            className={id === selectedOrigin ? "icon-active" : undefined}
+                                        />
+                                    ))}
+                            </Box>
+                            <Box className="recommended">
+                                <FormControlLabel control={<Checkbox size="small" onClick={() => setUseRecommended(true)} onChange={() => setSelectedOrigin(recommended)} checked={useRecommended} />} label={t("UseAlwaysRecommended")} />
+                            </Box>
+                        </Box>
+                    ) : null}
+                    <Box className="upload-actions">
+                        <Button
+                            onClick={onClose}
+                            variant="outlined"
+                            color="secondary"
+                            className="cancel-button"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                if (filename.split('.').pop() !== extension) {
+                                    setConfirm(true);
+                                } else {
+                                    onUpload();
+                                }
+                            }}
+                            disabled={!isNameValid}
+                            className="upload-button"
+                        >
+                            Upload
+                        </Button>
+                    </Box>
                 </Box>
             </Modal>
         </Box>

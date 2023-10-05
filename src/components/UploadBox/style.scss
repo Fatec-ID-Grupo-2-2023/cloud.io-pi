@@ -1,4 +1,4 @@
-#upload-box {
+.upload-box {
     background-color: var(--black2);
     margin: 5vh 24px;
     padding: 8px 12px;
@@ -12,8 +12,47 @@
         text-align: center;
     }
 
-    .upload-button {
-        margin-top: 6px;
+    .upload-origin {
+
+        .icons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+
+            .icon-active {
+                border: 1px solid var(--purple2);
+                background-color: var(--purple3op);
+            }
+
+            img {
+                width: 54px;
+                height: 54px;
+            }
+
+            .star-badge {
+                top: 6px !important;
+                right: 6px !important;
+            }
+
+            .star {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        .recommended {
+            padding: 0 18px;
+            color: var(--black4)
+        }
+    }
+
+    .upload-actions {
+        display: flex;
+        flex-direction: row;
         justify-content: end;
+        gap: 8px;
+        margin-top: 12px;
     }
 }

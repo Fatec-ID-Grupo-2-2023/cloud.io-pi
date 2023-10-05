@@ -6,11 +6,11 @@ import DocIcon from '../../assets/empty-doc.svg';
 import ImageIcon from '../../assets/image.svg';
 import MusicIcon from '../../assets/music.svg';
 import VideoIcon from '../../assets/video.svg';
-import CategoryButton from '../../components/CategoryButton';
 import CloudAccount from '../../components/CloudAccount';
 import CloudAccountEmpty from '../../components/CloudAccountEmpty';
 import FilesExplorer from '../../components/FilesExplorer';
 import Header from '../../components/Header';
+import IconButton from '../../components/IconButton';
 import ListModal from '../../components/ListModal';
 import { ListModalItem } from '../../components/ListModal/model';
 import NavBar from '../../components/NavBar';
@@ -92,10 +92,10 @@ export default function Home() {
             {cloudStorage && cloudStorage.accounts.length ? (
                 <>
                     <section id='file-categories' >
-                        <CategoryButton icon={DocIcon} onClick={() => handleClick('all', 'document')} />
-                        <CategoryButton icon={ImageIcon} onClick={() => handleClick('all', 'image')} />
-                        <CategoryButton icon={VideoIcon} onClick={() => handleClick('all', 'video')} />
-                        <CategoryButton icon={MusicIcon} onClick={() => handleClick('all', 'audio')} />
+                        <IconButton icon={DocIcon} onClick={() => handleClick('all', 'document')} />
+                        <IconButton icon={ImageIcon} onClick={() => handleClick('all', 'image')} />
+                        <IconButton icon={VideoIcon} onClick={() => handleClick('all', 'video')} />
+                        <IconButton icon={MusicIcon} onClick={() => handleClick('all', 'audio')} />
                     </section>
 
                     <section id='recent-files' >

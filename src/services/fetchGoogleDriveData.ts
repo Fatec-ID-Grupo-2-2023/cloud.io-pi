@@ -105,7 +105,7 @@ function getType(webViewLink: string, fileExtension?: string) {
     return type;
 }
 
-export async function uploadFile(file: File, token?: string, options?: ICloudioUploadOptions) {
+export async function uploadGoogleDriveFile(file: File, token?: string, options?: ICloudioUploadOptions) {
     const form = new FormData();
     form.append('file', file);
 

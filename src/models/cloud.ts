@@ -33,6 +33,7 @@ export interface ICloudioCapacity {
 
 export interface ICloudioUploadOptions {
     filename?: string;
+    origin?: ICloudioOrigin;
 }
 
 export type ICloudioOrigin = 'google-drive' | 'dropbox' | 'onedrive' | 'all';

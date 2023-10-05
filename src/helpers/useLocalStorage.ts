@@ -1,8 +1,12 @@
 import { useState } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useLocalStorage(key: string, initialValue: any) {
-    const [storedValue, setStoredValue] = useState(() => {
+type IResponse<T> = [
+    T,
+    (_: T) => void
+]
+
+export function useLocalStorage<T>(key: string, initialValue: T): IResponse<T> {
+    const [storedValue, setStoredValue] = useState<T>(() => {
         try {
             const item = window.localStorage.getItem(key);
             return item ? JSON.parse(item) : initialValue;
@@ -12,7 +16,7 @@ export function useLocalStorage(key: string, initialValue: any) {
         }
     });
 
-    function setValue(value: typeof initialValue) {
+    function setValue(value: T) {
         try {
             const valueToStore = value instanceof Function ? value(storedValue) : value;
             setStoredValue(valueToStore);

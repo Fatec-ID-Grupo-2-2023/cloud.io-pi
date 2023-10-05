@@ -19,7 +19,12 @@ export interface IGlobalContext {
     language: ILanguage;
     setLanguage: (language: ILanguage) => void;
 
+    recommendedOrigin: boolean;
+    setRecommendedOrigin: (recommendedOrigin: boolean) => void;
+
     uploadGoogleFile: (file: File, options?: ICloudioUploadOptions) => void;
+
+    uploadDropboxFile: (file: File, options?: ICloudioUploadOptions) => void;
 }
 
 export const GlobalContext = createContext<IGlobalContext>({} as IGlobalContext);

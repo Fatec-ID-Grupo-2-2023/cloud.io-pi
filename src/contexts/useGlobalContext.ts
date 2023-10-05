@@ -6,10 +6,10 @@ import { auth } from '../auth/firebase';
 import { buildTree, matchTree } from '../helpers/buildTree';
 import { useLocalStorage } from '../helpers/useLocalStorage';
 import { ICloudioAccount, ICloudioCapacity, ICloudioFile, ICloudioStorage, ICloudioUploadOptions } from '../models/cloud';
-import { IToken } from '../models/general';
+import { ILanguage, IToken } from '../models/general';
 import { linkAccountCheck } from '../pages/Login/service';
-import { getDropboxAbout, getDropboxFiles } from '../services/fetchDropboxData';
-import { getGoogleDriveAbout, getGoogleDriveFiles, uploadFile } from '../services/fetchGoogleDriveData';
+import { getDropboxAbout, getDropboxFiles, uploadDbxFile } from '../services/fetchDropboxData';
+import { getGoogleDriveAbout, getGoogleDriveFiles, uploadGoogleDriveFile } from '../services/fetchGoogleDriveData';
 import { deepCopy } from '../utils/deepCopy';
 import getFileType from '../utils/getFileType';
 import { IGlobalContext } from './GlobalContext';
@@ -17,7 +17,8 @@ import { IGlobalContext } from './GlobalContext';
 export default function useGlobalContext(): IGlobalContext {
     const history = useHistory();
     const { i18n } = useTranslation();
-    const [language, setLanguage] = useLocalStorage('language', 'en');
+    const [language, setLanguage] = useLocalStorage<ILanguage>('language', 'en');
+    const [recommendedOrigin, setRecommendedOrigin] = useLocalStorage('recommendedOrigin', false);
 
     useEffect(() => {
         i18n.changeLanguage(language);
@@ -101,7 +102,7 @@ export default function useGlobalContext(): IGlobalContext {
     const [dropboxStorage, setDropboxStorage] = useState<ICloudioCapacity>();
 
     async function uploadGoogleFile(file: File, options?: ICloudioUploadOptions) {
-        const uploadedFile = await uploadFile(file, googleToken?.access_token, options);
+        const uploadedFile = await uploadGoogleDriveFile(file, googleToken?.access_token, options);
 
         const extension = file.name.split('.').pop();
 
@@ -124,6 +125,32 @@ export default function useGlobalContext(): IGlobalContext {
         }];
 
         setGoogleDriveFiles(list);
+    }
+
+    async function uploadDropboxFile(file: File, options?: ICloudioUploadOptions) {
+        const uploadedFile = await uploadDbxFile(file, dropboxToken?.access_token, options);
+
+        const extension = file.name.split('.').pop();
+
+        const list: ICloudioFile[] = [...dropboxFiles, {
+            id: uploadedFile.id,
+            name: uploadedFile.name,
+            extension,
+            type: getFileType(extension),
+            trashed: false,
+            modifiedTime: new Date(),
+            handleClick: () => {
+                const url = URL.createObjectURL(file);
+                window.open(url, '_blank');
+            },
+            size: file.size,
+            shared: false,
+            origin: 'dropbox',
+            parent: 'root',
+            children: []
+        }];
+
+        setDropboxFiles(list);
     }
 
     useEffect(() => {
@@ -236,6 +263,9 @@ export default function useGlobalContext(): IGlobalContext {
         cloudStorage,
         language,
         setLanguage,
-        uploadGoogleFile
+        uploadGoogleFile,
+        uploadDropboxFile,
+        recommendedOrigin,
+        setRecommendedOrigin
     }), [user, cloudFiles, trashedFiles, cloudStorage, language, setLanguage]);
 }
