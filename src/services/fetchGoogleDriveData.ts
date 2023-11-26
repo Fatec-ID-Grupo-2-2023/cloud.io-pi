@@ -110,7 +110,8 @@ export async function uploadGoogleDriveFile(file: File, token?: string, options?
     form.append('file', file);
 
     const metadata = {
-        name: options?.filename ?? file.name
+        name: options?.filename ?? file.name,
+        parents: [options?.paths?.parent] ?? undefined
     };
 
     form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));

@@ -1,12 +1,14 @@
-import { Alert, AlertColor, Badge, Box, Button, Checkbox, FormControlLabel, Modal, Snackbar, TextField, Typography } from '@mui/material';
+import { Alert, AlertColor, Badge, Box, Button, Checkbox, FormControlLabel, List, Modal, Snackbar, TextField, Typography } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import StarIcon from '../../assets/star.svg';
 import { GlobalContext } from '../../contexts/GlobalContext';
 import { ICloudioUploadOptions } from '../../models/cloud';
+import { filterFiles } from '../../utils/filterFiles';
 import { getOriginIcon } from '../../utils/getIcon';
 import ConfirmBox from '../ConfirmBox';
 import IconButton from '../IconButton';
+import FolderListItem from './FolderListItem';
 import './style.scss';
 
 interface IProps {
@@ -20,18 +22,24 @@ export default function UploadBox({ open, onClose, onConfirm, defaultFilename }:
     const [alert, setAlert] = useState<AlertColor>();
     const [filename, setFilename] = useState('');
     const [confirm, setConfirm] = useState(false);
-    const { cloudStorage, recommendedOrigin, setRecommendedOrigin } = useContext(GlobalContext);
+    const { cloudStorage, recommendedOrigin, setRecommendedOrigin, cloudFiles } = useContext(GlobalContext);
     const { t } = useTranslation();
     const extension = defaultFilename?.split('.').pop();
     const validateName = /^[a-zA-Z0-9-_\.\s]+$/;
     const isNameValid = validateName.test(filename ?? '');
     const recommended = cloudStorage?.accounts.sort((a, b) => (a.limit - a.usage) + (b.limit - b.usage))[0]?.id;
-    const [selectedOrigin, setSelectedOrigin] = useState(recommended);
+    const [selectedOrigin, setSelectedOrigin] = useState(cloudStorage?.accounts.sort((a, b) => (a.limit - a.usage) + (b.limit - b.usage))[0]?.id);
     const [useRecommended, setUseRecommended] = useState(false);
+    const filteredFiles = filterFiles(cloudFiles ?? [], undefined, undefined, "folder");
+    const [selected, setSelected] = useState<string>();
+    const [paths, setPaths] = useState({
+        path: '',
+        parent: ''
+    })
 
     function onUpload() {
         try {
-            onConfirm({ filename, origin: selectedOrigin });
+            onConfirm({ filename, origin: selectedOrigin, paths });
             setRecommendedOrigin(useRecommended);
             onClose();
             setAlert('success');
@@ -84,7 +92,22 @@ export default function UploadBox({ open, onClose, onConfirm, defaultFilename }:
                         onChange={(e) => setFilename(e.target.value)}
                         helperText={isNameValid ? '' : t('InvalidFilename')}
                     />
-                    {!recommendedOrigin && cloudStorage ? (
+                    <List className="upload-folders">
+                        {
+                            filteredFiles.map((file, index) => (
+                                <FolderListItem
+                                    key={index}
+                                    file={file}
+                                    selected={selected}
+                                    onSelect={(path, parent) => {
+                                        setSelected(parent)
+                                        setPaths({ path, parent })
+                                    }}
+                                />
+                            ))
+                        }
+                    </List>
+                    {!recommendedOrigin && cloudStorage && cloudStorage.accounts.length > 1 ? (
                         <Box className="upload-origin">
                             <Box className="icons">
                                 {cloudStorage.accounts.map(({ id }, index) =>

@@ -31,9 +31,15 @@ export interface ICloudioCapacity {
     limit: number;
 }
 
+interface IPaths {
+    path: string;
+    parent: string;
+}
+
 export interface ICloudioUploadOptions {
     filename?: string;
     origin?: ICloudioOrigin;
+    paths?: IPaths;
 }
 
 export type ICloudioOrigin = 'google-drive' | 'dropbox' | 'onedrive' | 'all';

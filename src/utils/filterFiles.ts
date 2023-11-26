@@ -11,8 +11,12 @@ export function filterFiles(files: ICloudioFile[], byName?: string, byOrigin?: I
         filteredFiles = filterTree(filteredFiles, byOrigin, 'origin');
     }
 
-    if (byType && byType !== 'all') {
+    if (byType && byType !== 'all' && byType !== 'folder') {
         filteredFiles = filterTree(filteredFiles, byType, 'type');
+    }
+
+    if (byType === 'folder') {
+        filteredFiles = filterFolderTree(filteredFiles);
     }
 
     return filteredFiles;
@@ -39,6 +43,23 @@ function filterTree(files: ICloudioFile[], value: string, field: keyof ICloudioF
                 if (folder.length > 0) {
                     filteredFiles.push({ ...file, children: folder });
                 }
+            }
+        }
+    });
+
+    return filteredFiles;
+}
+
+function filterFolderTree(files: ICloudioFile[]) {
+    const filteredFiles: ICloudioFile[] = [];
+
+    files.forEach(file => {
+        if (file.type === 'folder') {
+            if (file.children.length > 0) {
+                const folders = filterFolderTree(file.children);
+                filteredFiles.push({ ...file, children: folders });
+            } else {
+                filteredFiles.push(file);
             }
         }
     });

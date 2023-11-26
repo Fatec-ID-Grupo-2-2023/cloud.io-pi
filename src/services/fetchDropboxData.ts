@@ -107,7 +107,7 @@ export async function uploadDbxFile(file: File, token?: string, options?: ICloud
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/octet-stream",
             "Dropbox-API-Arg": JSON.stringify({
-                path: `/${options?.filename ?? file.name}`
+                path: `/${options?.paths?.path}/${options?.filename ?? file.name}`
             })
         }
     });

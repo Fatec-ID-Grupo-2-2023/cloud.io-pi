@@ -120,7 +120,7 @@ export default function useGlobalContext(): IGlobalContext {
             size: file.size,
             shared: false,
             origin: 'google-drive',
-            parent: 'root',
+            parent: options?.paths?.parent ?? 'root',
             children: []
         }];
 
@@ -146,7 +146,7 @@ export default function useGlobalContext(): IGlobalContext {
             size: file.size,
             shared: false,
             origin: 'dropbox',
-            parent: 'root',
+            parent: options?.paths?.parent ?? 'root',
             children: []
         }];
 
