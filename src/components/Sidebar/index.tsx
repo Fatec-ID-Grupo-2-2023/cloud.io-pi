@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import Cloud from '../../assets/cloud.svg';
+import LicenseIcon from '../../assets/license.svg';
 import Logo from '../../assets/logo-and-name.svg';
 import LogoutIcon from '../../assets/logout.svg';
 import SettingsIcon from '../../assets/settings.svg';
@@ -31,6 +32,16 @@ export default function Sidebar({ open, onClose }: IProps) {
         //     img: TrashIcon,
         //     onClick() { history.push('/trash') }
         // },
+        {
+            text: t('PrivacyPolicy'),
+            img: LicenseIcon,
+            onClick() { window.open('https://fatecspgov-my.sharepoint.com/:w:/g/personal/gianluca_micheli_fatec_sp_gov_br/EQX3GpC-MBZJj4Bju27kzPQBIentXa50UId4NyCt1dWnGg?e=5ob94Z', '_blank') }
+        },
+        {
+            text: t('TermsOfUse'),
+            img: LicenseIcon,
+            onClick() { window.open('https://fatecspgov-my.sharepoint.com/:w:/g/personal/gianluca_micheli_fatec_sp_gov_br/EXv-m1CNBIZMl-NqtG5t-Z0ByiFp9_4H7PJhJQRUPH20ag?e=nJIg5y', '_blank') }
+        },
         {
             text: t('Settings'),
             img: SettingsIcon,
